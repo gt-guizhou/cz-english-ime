@@ -20,6 +20,9 @@ pub(crate) fn run_login(
         .map_err(|error| error.to_string())?;
     let value: serde_json::Value = client
         .post(&url)
+        // device-type 决定 token 的 client_type：czime 专属类型，与网页(pc)/App 的 token 互不顶掉
+        // （同 client_type 内新登录清旧 token，2026-10-07 生产实测两种类型并存互踢隔离）
+        .header("device-type", "czime")
         // JSON 体：TP5 的 post() 会解析 application/json（仓库备注 25 证实），字符串字段不受全局 filter 影响
         .json(&serde_json::json!({ "account": account, "password": password }))
         .send()
