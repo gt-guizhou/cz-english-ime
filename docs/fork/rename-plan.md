@@ -20,6 +20,21 @@
 | 11 | 品牌词表 `brand.tsv` 里的「青简」词条 | 「疯狂听抄」等自有词 | `assets/lexicon/brand.tsv` |
 | 12 | README/CHANGELOG/SECURITY 中的品牌叙述 | 已重写 README、新增 NOTICE；CHANGELOG 保留上游历史、新增「Fork 后变更」分节 | 根目录文档 |
 
+## 同步上游 SOP（每 1–2 周一次，勿攒）
+
+```bash
+git fetch upstream && git rebase upstream/main
+# 冲突多发生在品牌字符串行：一律保留我们的品牌名（疯狂听抄输入法/CZEnglishIME）
+# 新增文件/新 crate（qingjian-sync 等）零冲突
+cargo check --workspace 2>/dev/null || cargo check -p qingjian-update -p qingjian-windows-server -p qingjian-windows-settings -p qingjian-windows-tsf
+cargo run -p qingjian-cli -- nihao   # 冒烟：候选正常出、译词在
+git push                              # rebase 后如被拒：git push --force-with-lease
+```
+
+- macOS 端改动需 Mac 上编译验证（本机 objc2 编不了）。
+- 上游若换许可证（如 AGPL）：已取得版本不受影响，可停在最后 GPL 版；此后新更新需重新评估再决定是否合并。
+- 通用修复（与品牌无关）鼓励 PR 回上游：被收编后 rebase 零冲突。
+
 ## 不改的（第一阶段）
 
 - crate 名 `qingjian-core` 等、二进制 `qingjian-cli`、`.qj`/`.qjm` 数据格式名——内部标识符，无品牌暴露（候选窗不显示），保留可最小化 rebase 冲突。
