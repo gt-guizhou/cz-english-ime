@@ -7,7 +7,7 @@
 ;    计划任务直接拉起拿不到 uiAccess）；④ 装完点 Finish 立即以原用户 ShellExecute 起一次 Server，免得先注销。
 ; 卸载反向：删旧任务（若有）、杀 Server、反注册 DLL，再删文件（用户数据 %APPDATA%\CZEnglishIME 保留；启动快捷方式 Inno 自动删）。
 ;
-; 升级：DLL 被加载进每个应用进程，文件锁着覆盖不了，所以 DLL 按版本起名（qingjian_tsf-<版本>.dll）并排装，
+; 升级：DLL 被加载进每个应用进程，文件锁着覆盖不了，所以 DLL 按版本起名（czime_tsf-<版本>.dll）并排装，
 ; 注册新的，旧的装完后删（删不掉的登记成重启后删）；已开着的应用继续用旧 DLL 直到重启，Server 两个版本都服务。
 ; Inno 的 CloseApplications 会用 Restart Manager 找出所有加载了 *.dll 的进程要求关闭——对输入法 DLL 就是关一切，故关掉；
 ; 只有 Server / 设置程序两个 exe 要覆盖，安装前自己 taskkill。
@@ -26,12 +26,12 @@
 #endif
 #define AppName "疯狂听抄输入法"
 #define Publisher "疯狂听抄输入法"
-#define WebsiteUrl "https://qingjian.im"
+#define WebsiteUrl "https://www.raptrans.cn"
 ; 脚本相对仓库根（ime/）：installer → windows → apps → ime
 #define Repo "..\..\.."
 ; 按版本起名的 TSF DLL（见文件头「升级」）。
-#define TsfDll "qingjian_tsf-" + AppVersion + ".dll"
-#define TsfDll32 "qingjian_tsf-" + AppVersion + "-x86.dll"
+#define TsfDll "czime_tsf-" + AppVersion + ".dll"
+#define TsfDll32 "czime_tsf-" + AppVersion + "-x86.dll"
 
 [Setup]
 AppId={{F5D4CB91-4B16-4E6B-A314-40C6A78B7481
@@ -52,8 +52,8 @@ PrivilegesRequired=admin
 CloseApplications=no
 OutputDir={#Repo}\target\installer
 OutputBaseFilename=czime-{#AppVersion}-windows-x86_64-setup
-SetupIconFile={#Repo}\apps\windows\tsf\resources\qingjian.ico
-UninstallDisplayIcon={app}\qingjian.ico
+SetupIconFile={#Repo}\apps\windows\tsf\resources\czime.ico
+UninstallDisplayIcon={app}\czime.ico
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
@@ -69,13 +69,13 @@ FinishedLabel=安装完成。请注销后重新登录（或重启电脑），疯
 [Files]
 ; —— 二进制 ——
 ; DLL 按版本起名并排装；卸载时若仍被占用，登记成重启后删。
-Source: "{#Repo}\target\release\qingjian_tsf.dll";      DestDir: "{app}"; DestName: "{#TsfDll}"; Flags: ignoreversion uninsrestartdelete
-Source: "{#Repo}\target\i686-pc-windows-msvc\release\qingjian_tsf.dll"; DestDir: "{app}"; DestName: "{#TsfDll32}"; Flags: ignoreversion uninsrestartdelete
-Source: "{#Repo}\target\release\qingjian-settings.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Repo}\target\release\czime_tsf.dll";      DestDir: "{app}"; DestName: "{#TsfDll}"; Flags: ignoreversion uninsrestartdelete
+Source: "{#Repo}\target\i686-pc-windows-msvc\release\czime_tsf.dll"; DestDir: "{app}"; DestName: "{#TsfDll32}"; Flags: ignoreversion uninsrestartdelete
+Source: "{#Repo}\target\release\czime-settings.exe"; DestDir: "{app}"; Flags: ignoreversion
 ; 设置程序自带一份 Windows App Runtime（自包含部署：Windows 10 上机器装的框架包用不了，见 docs\notes\windows-win10.md）；
 ; 文件由 build.ps1 按 settings-runtime.txt 从 target\release 挑进 target\installer\settings-runtime，必须与 exe 同级。
 Source: "{#Repo}\target\installer\settings-runtime\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#Repo}\apps\windows\tsf\resources\qingjian.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Repo}\apps\windows\tsf\resources\czime.ico"; DestDir: "{app}"; Flags: ignoreversion
 ; —— 随包生成数据（只装运行时要的 .qj / .tsv，不装 dev 中间产物）——
 Source: "{#Repo}\data\generated\dict.qj";        DestDir: "{app}\data\generated";       Flags: ignoreversion
 Source: "{#Repo}\data\generated\lm.qj";          DestDir: "{app}\data\generated";       Flags: ignoreversion
@@ -103,23 +103,23 @@ Source: "{#Repo}\assets\levels\levels-ja.tsv";   DestDir: "{app}\assets\levels";
 Source: "{#Repo}\assets\wubi\wubi86.tsv";        DestDir: "{app}\assets\wubi";   Flags: ignoreversion
 Source: "{#Repo}\assets\sample\dict.tsv";        DestDir: "{app}\assets\sample"; Flags: ignoreversion
 ; —— Server 放最后：它一落地，旧版 DLL 就能把它拉起来并占住数据文件（见文件头）——
-Source: "{#Repo}\target\release\qingjian-server.exe";   DestDir: "{app}"; Flags: ignoreversion
+Source: "{#Repo}\target\release\czime-server.exe";   DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\疯狂听抄输入法设置"; Filename: "{app}\qingjian-settings.exe"; IconFilename: "{app}\qingjian.ico"
+Name: "{group}\疯狂听抄输入法设置"; Filename: "{app}\czime-settings.exe"; IconFilename: "{app}\czime.ico"
 Name: "{group}\卸载疯狂听抄输入法"; Filename: "{uninstallexe}"
 ; 登录自启：登录时 Explorer 走 ShellExecute 拉起本快捷方式 → AppInfo 授予 uiAccess，候选窗才能盖过商店 / 任务栏搜索。
 ; 用 {commonstartup}（所有用户「启动」文件夹）而非 {userstartup}：本安装器是 admin 机器级安装，
 ; admin 模式下写每用户区会落到「谁提权就写谁」的 profile（Inno 会告警且可能不是目标用户）；
 ; 机器级「启动」项对每个登录用户都在其会话里由该用户的 Explorer 拉起，仍是 per-user 运行、仍授予 uiAccess。
 ; （计划任务直接拉起拿不到 uiAccess，故不用 schtasks。）
-Name: "{commonstartup}\疯狂听抄输入法 Server"; Filename: "{app}\qingjian-server.exe"; WorkingDir: "{app}"; IconFilename: "{app}\qingjian.ico"
+Name: "{commonstartup}\疯狂听抄输入法 Server"; Filename: "{app}\czime-server.exe"; WorkingDir: "{app}"; IconFilename: "{app}\czime.ico"
 
 [Run]
 ; ① UWP/AppContainer 应用要能读安装目录才能加载 DLL（*S-1-15-2-1 = ALL APPLICATION PACKAGES，按 SID 与语言无关）。
 Filename: "{sys}\icacls.exe"; Parameters: """{app}"" /grant *S-1-15-2-1:(OI)(CI)RX /T /C /Q"; \
   Flags: runhidden waituntilterminated; StatusMsg: "配置应用容器权限…"
-; ② 注册文本服务（写 HKCR + 图标到 %ProgramData%\CZEnglishIME\qingjian.ico）。注册的是本版本的 DLL，
+; ② 注册文本服务（写 HKCR + 图标到 %ProgramData%\CZEnglishIME\czime.ico）。注册的是本版本的 DLL，
 ;    InprocServer32 指向新文件；旧版本的 DLL **不能** regsvr32 /u（那会把整个 CLSID 注销掉）。
 Filename: "{sys}\regsvr32.exe"; Parameters: "/s ""{app}\{#TsfDll}"""; \
   Flags: runhidden waituntilterminated; StatusMsg: "注册输入法…"
@@ -133,9 +133,9 @@ Filename: "{syswow64}\regsvr32.exe"; Parameters: "/s ""{app}\{#TsfDll32}"""; \
 ; 反向：先删登录任务、杀 Server / 设置程序、反注册 DLL，Inno 再删文件（DLL 若仍被占用，重启后删）。
 Filename: "{sys}\schtasks.exe"; Parameters: "/delete /tn ""CZEnglishIME Server"" /f"; \
   Flags: runhidden; RunOnceId: "DelLogonTask"
-Filename: "{sys}\taskkill.exe"; Parameters: "/im qingjian-server.exe /f"; \
+Filename: "{sys}\taskkill.exe"; Parameters: "/im czime-server.exe /f"; \
   Flags: runhidden; RunOnceId: "KillServer"
-Filename: "{sys}\taskkill.exe"; Parameters: "/im qingjian-settings.exe /f"; \
+Filename: "{sys}\taskkill.exe"; Parameters: "/im czime-settings.exe /f"; \
   Flags: runhidden; RunOnceId: "KillSettings"
 Filename: "{sys}\regsvr32.exe"; Parameters: "/u /s ""{app}\{#TsfDll}"""; \
   Flags: runhidden; RunOnceId: "UnregDll"
@@ -154,8 +154,8 @@ Type: filesandordirs; Name: "{app}\codes"
 
 [UninstallDelete]
 ; 历次升级留下的旧版本 DLL（正常在升级时就删了；仍被占用的会留到这里）。
-Type: files; Name: "{app}\qingjian_tsf-*.dll"
-Type: files; Name: "{app}\qingjian-server.old-*.exe"
+Type: files; Name: "{app}\czime_tsf-*.dll"
+Type: files; Name: "{app}\czime-server.old-*.exe"
 
 [Code]
 function CreateMutex(Attributes: Longint; InitialOwner: BOOL; Name: String): THandle;
@@ -180,15 +180,15 @@ begin
   Result := True;
 end;
 
-{ 运行中的 exe 不能覆盖但能改名：改成 qingjian-server.old-<随机>.exe 腾出名字，旧版 DLL 就拉不起它（见文件头）。
+{ 运行中的 exe 不能覆盖但能改名：改成 czime-server.old-<随机>.exe 腾出名字，旧版 DLL 就拉不起它（见文件头）。
   装完由 DeleteStaleFiles 删掉。 }
 procedure RetireServerExe;
 var
   Path: String;
 begin
-  Path := ExpandConstant('{app}\qingjian-server.exe');
+  Path := ExpandConstant('{app}\czime-server.exe');
   if FileExists(Path) then
-    if not RenameFile(Path, ExpandConstant('{app}\qingjian-server.old-') + IntToStr(Random(1000000)) + '.exe') then
+    if not RenameFile(Path, ExpandConstant('{app}\czime-server.old-') + IntToStr(Random(1000000)) + '.exe') then
       Log('改名旧 Server 失败: ' + Path);
 end;
 
@@ -201,7 +201,7 @@ begin
 end;
 
 { 同版本重装（开发期反复装）：目标文件名与已加载的 DLL 撞名，覆盖不了但 Windows 允许改名，
-  先把它改成 qingjian_tsf-<版本>.old-<随机>.dll 腾出名字，装完由 DeleteStaleDlls 删掉 / 登记重启后删。 }
+  先把它改成 czime_tsf-<版本>.old-<随机>.dll 腾出名字，装完由 DeleteStaleDlls 删掉 / 登记重启后删。 }
 procedure RetireLoadedDll(const Name: String);
 var
   Path, Retired: String;
@@ -209,7 +209,7 @@ begin
   Path := ExpandConstant('{app}\') + Name;
   if FileExists(Path) then
   begin
-    Retired := ExpandConstant('{app}\qingjian_tsf-{#AppVersion}.old-') + IntToStr(Random(1000000)) + '.dll';
+    Retired := ExpandConstant('{app}\czime_tsf-{#AppVersion}.old-') + IntToStr(Random(1000000)) + '.dll';
     if not RenameFile(Path, Retired) then
       Log('改名旧 DLL 失败: ' + Path);
   end;
@@ -220,8 +220,8 @@ end;
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 begin
   RetireServerExe;
-  KillProcess('qingjian-server.exe');
-  KillProcess('qingjian-settings.exe');
+  KillProcess('czime-server.exe');
+  KillProcess('czime-settings.exe');
   RetireLoadedDll('{#TsfDll}');
   RetireLoadedDll('{#TsfDll32}');
   Result := '';
@@ -245,7 +245,7 @@ var
   Found: TFindRec;
 begin
   Dir := ExpandConstant('{app}');
-  if FindFirst(Dir + '\qingjian-server.old-*.exe', Found) then
+  if FindFirst(Dir + '\czime-server.old-*.exe', Found) then
   begin
     try
       repeat
@@ -267,7 +267,7 @@ var
   Found: TFindRec;
 begin
   Dir := ExpandConstant('{app}');
-  if FindFirst(Dir + '\qingjian_tsf*.dll', Found) then
+  if FindFirst(Dir + '\czime_tsf*.dll', Found) then
   begin
     try
       repeat
@@ -311,6 +311,6 @@ begin
   Result := True;
   if (CurPageID = wpFinished) and (not WizardSilent) then
     ShellExecAsOriginalUser(
-      '', ExpandConstant('{app}\qingjian-server.exe'), '', '',
+      '', ExpandConstant('{app}\czime-server.exe'), '', '',
       SW_SHOWNORMAL, ewNoWait, ErrorCode);
 end;

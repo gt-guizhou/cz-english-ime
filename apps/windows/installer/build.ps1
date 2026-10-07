@@ -48,10 +48,10 @@ if (-not $SkipBuild) {
 
 # 缺一个产物就早报错。
 $targets = @(
-    'release\qingjian_tsf.dll',
-    'i686-pc-windows-msvc\release\qingjian_tsf.dll',
-    'release\qingjian-server.exe',
-    'release\qingjian-settings.exe'
+    'release\czime_tsf.dll',
+    'i686-pc-windows-msvc\release\czime_tsf.dll',
+    'release\czime-server.exe',
+    'release\czime-settings.exe'
 )
 foreach ($t in $targets) {
     $p = Join-Path $Repo "target\$t"

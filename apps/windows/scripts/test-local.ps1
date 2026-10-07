@@ -36,8 +36,8 @@ $ErrorActionPreference = 'Stop'
 # apps\windows\scripts -> apps\windows -> apps -> 仓库根
 $repo = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot))
 $table = Join-Path $repo 'assets\wubi\wubi86.tsv'
-$server = Join-Path $repo 'target\debug\qingjian-server.exe'
-$dll = Join-Path $repo 'target\debug\qingjian_tsf.dll'
+$server = Join-Path $repo 'target\debug\czime-server.exe'
+$dll = Join-Path $repo 'target\debug\czime_tsf.dll'
 $config = Join-Path $env:APPDATA 'CZEnglishIME\config.toml'
 $logs = Join-Path $env:APPDATA 'CZEnglishIME\logs'
 
@@ -67,8 +67,8 @@ if (-not $SkipBuild) {
     # 被载着时编译写不进去，cargo 报的是「failed to remove file ... 拒绝访问」，看着像代码坏了。
     # 先查出来点名，别让人去猜。
     $holders = @(
-        tasklist /m qingjian_tsf.dll /NH 2>$null |
-            Select-String -SimpleMatch 'qingjian_tsf.dll'
+        tasklist /m czime_tsf.dll /NH 2>$null |
+            Select-String -SimpleMatch 'czime_tsf.dll'
     )
     if ($holders.Count -gt 0) {
         Write-Host '== 有进程正加载着 TSF DLL，编译写不进去' -ForegroundColor Yellow
@@ -76,7 +76,7 @@ if (-not $SkipBuild) {
         Write-Host ''
         Write-Host '   切走输入法就能放开（TSF 在切走时卸载 DLL）：Win+Space 换到别的输入法，或 Shift 切英文。' -ForegroundColor Yellow
         Write-Host '   还不行就关掉那个窗口重开，在新窗口里别切到疯狂听抄输入法，直接跑本脚本。' -ForegroundColor Yellow
-        Write-Host '   （查：tasklist /m qingjian_tsf.dll）' -ForegroundColor Yellow
+        Write-Host '   （查：tasklist /m czime_tsf.dll）' -ForegroundColor Yellow
         exit 1
     }
 
@@ -98,7 +98,7 @@ if (-not $SkipBuild) {
 
 Write-Host '== 停掉在跑的 Server' -ForegroundColor Cyan
 # 管道名只有一个，旧的占着不放，新起来的连不上——那是静默的二选一，会让人以为新代码没生效
-$running = Get-Process -Name qingjian-server -ErrorAction SilentlyContinue
+$running = Get-Process -Name czime-server -ErrorAction SilentlyContinue
 if ($running) {
     $running | Stop-Process -Force
     Write-Host "   停掉 $($running.Count) 个"
@@ -117,7 +117,7 @@ New-Item -ItemType Directory -Force -Path (Join-Path $WorkDir 'assets\wubi') | O
 Copy-Item -LiteralPath $table -Destination (Join-Path $WorkDir 'assets\wubi') -Force
 # DLL 也拷过来再注册：从 `target\debug` 注册的话，那个文件会被加载它的进程锁住，
 # 之后 `cargo build` 写不进去（链接报 LNK1104，看着像代码坏了）
-$workDll = Join-Path $WorkDir 'qingjian_tsf.dll'
+$workDll = Join-Path $WorkDir 'czime_tsf.dll'
 Copy-Item -LiteralPath $dll -Destination $workDll -Force
 Write-Host '   新 Server、TSF DLL 与五笔码表已就位'
 
@@ -154,14 +154,14 @@ if (-not $SkipRegister) {
 }
 
 Write-Host '== 起 Server' -ForegroundColor Cyan
-Start-Process -FilePath (Join-Path $WorkDir 'qingjian-server.exe') -WorkingDirectory $WorkDir
+Start-Process -FilePath (Join-Path $WorkDir 'czime-server.exe') -WorkingDirectory $WorkDir
 Start-Sleep -Seconds 3
 
 Write-Host ''
 Write-Host '接下来手动做这四步：' -ForegroundColor Cyan
 Write-Host ''
 Write-Host '  1. 看日志确认两边都对了（应该有两行「形码码表已载入」与「协议」相关的警告不该出现）：'
-Write-Host "       Get-Content `"$logs\qingjian-server.*.log`" -Tail 20"
+Write-Host "       Get-Content `"$logs\czime-server.*.log`" -Tail 20"
 Write-Host '     entries=89256 是码表；词库那行应该是一万以上，不是 148（148 说明落到样例数据了）。'
 Write-Host ''
 Write-Host '  2. 改配置（保存即热加载，不用重启）。拼音与形码是两条独立的轴：'
@@ -181,7 +181,7 @@ Write-Host '       ggll   → 一'
 Write-Host '       混输时：nihao 出「你好」（五笔查不到就落到拼音），第 5 个字母起自动只剩拼音'
 Write-Host '     再看候选右侧有没有译文小字、悬浮状态条第一格是不是方案名（混输是「五笔（86） + 全拼」）。'
 Write-Host ''
-$installedDll = Get-ChildItem -LiteralPath $InstallDir -Filter 'qingjian_tsf-*.dll' -ErrorAction SilentlyContinue |
+$installedDll = Get-ChildItem -LiteralPath $InstallDir -Filter 'czime_tsf-*.dll' -ErrorAction SilentlyContinue |
     Select-Object -First 1 -ExpandProperty FullName
 Write-Host '回滚：注销新 DLL，再注册装好的那个'
 Write-Host "      regsvr32 /u `"$workDll`""
@@ -189,7 +189,7 @@ if ($installedDll) {
     Write-Host "      regsvr32 `"$installedDll`""
 }
 else {
-    Write-Host "      （$InstallDir 下没找到 qingjian_tsf-*.dll，回滚时用安装包重装一遍）"
+    Write-Host "      （$InstallDir 下没找到 czime_tsf-*.dll，回滚时用安装包重装一遍）"
 }
 
-#regsvr32 "C:\OpenSource\qingjian\target\debug\qingjian_tsf.dll"
+#regsvr32 "C:\OpenSource\qingjian\target\debug\czime_tsf.dll"

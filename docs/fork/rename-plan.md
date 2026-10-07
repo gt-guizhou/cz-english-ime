@@ -51,3 +51,18 @@ git push                              # rebase 后如被拒：git push --force-w
   （`CandidateRenderer::Qingjian` 定义在 crates/，两处使用已回退）。后续批次对 apps/ 做标识符级替换前先比对 crates/。
 - 待第二批：二进制名/进程名（qingjian-server→czime-server，牵动 build.rs/embed-manifest/协议字符串/安装器引用）、
   新图标（替换 assets/icon/ 竹简 mark，上游 logo 不在授权内）、「关于」页 UPSTREAM_URL 按钮（随账号/同步页接线）。
+
+## 执行注记（2026-10-07 第二批：Windows 二进制与图标）
+
+- 已完成：bin `czime-server`/`czime-settings`、DLL `czime_tsf.dll`（lib 名与全部 `qingjian_tsf::` 引用）、
+  管道 `\\.\pipe\czime`（codec.rs 单点）、安装器 WebsiteUrl→raptrans.cn 与 DLL/exe/图标文件引用、
+  ProgramData 注册图标文件名 czime.ico（icon.rs 自写自读单点）。
+- 图标：**占位图标已生成**（品牌蓝 #2563EB 圆角方块 + 白色 CZ）——`tools/gen-placeholder-icon.ps1`
+  （ASCII 注释防 PS5 GBK 吞行坑）产出 `apps/windows/tsf/resources/czime.ico`（DLL 注册嵌入 + settings exe
+  嵌入 + 安装器）与 `assets/icon/logo.png`（mac icns 源）；上游 `qingjian.ico`、`qingjian-mark.svg` 已删除。
+  正式视觉定稿后改脚本重跑即可替换。
+- 验证：gnu 工具链 `cargo check --all-targets`（tsf/server/settings/platform/update）全绿，
+  `czime-server.exe` 完整构建链接成功。
+- **Mac 批次待办**（本机无 objc2/Xcode，集中到 Mac 上做）：二进制名 `qingjian-macos`、菜单栏图标
+  `assets/icon/menu.pdf`/`menu.svg`（仍是上游竹简模板，**发 macOS 包前必须换**）、bundle.sh/uninstall.sh 随动检查。
+- msvc 真编译（安装包产物）待装 VS Build Tools 后验证；gnu 仅作语法/链接验证，不用于发版。

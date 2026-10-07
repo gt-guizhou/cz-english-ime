@@ -30,5 +30,5 @@ fn main() {
 
 #[cfg(not(windows))]
 fn main() {
-    eprintln!("qingjian-settings 仅支持 Windows");
+    eprintln!("czime-settings 仅支持 Windows");
 }

@@ -7,7 +7,7 @@ license.workspace = true
 repository.workspace = true
 
 [[bin]]
-name = "qingjian-server"
+name = "czime-server"
 path = "src/main.rs"
 
 # 嵌 uiAccess manifest（见 build.rs）

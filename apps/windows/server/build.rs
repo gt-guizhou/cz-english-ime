@@ -31,7 +31,7 @@ fn main() {
 /// winresource 缺省不带 manifest，与上面链接器嵌的那份不冲突。
 #[cfg(windows)]
 fn embed_icon() {
-    const ICON: &str = "../tsf/resources/qingjian.ico";
+    const ICON: &str = "../tsf/resources/czime.ico";
     println!("cargo:rerun-if-changed={ICON}");
     if let Err(error) = winresource::WindowsResource::new().set_icon(ICON).compile() {
         println!("cargo:warning=嵌入 Server 图标失败: {error}");
