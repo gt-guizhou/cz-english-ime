@@ -22,6 +22,17 @@
 
 ## 不改的（第一阶段）
 
-- crate 名 `qingjian-core` 等、二进制 `qingjian-cli`、`.qj`/`.qjm` 数据格式名——内部标识，无品牌暴露（候选窗不显示），保留可最小化 rebase 冲突。
+- crate 名 `qingjian-core` 等、二进制 `qingjian-cli`、`.qj`/`.qjm` 数据格式名——内部标识符，无品牌暴露（候选窗不显示），保留可最小化 rebase 冲突。
 - `docs/` 开发文档里的历史叙述——历史事实，保留出处感。
 - LICENSE 与 `assets/` 数据许可文件——必须原样保留。
+
+## 执行注记（2026-10-07 第一批）
+
+- 已完成：上表 1–8、10–12（bundle id `cn.raptrans.ime`、配置目录 `CZEnglishIME`、更新端点暂指
+  `raw.githubusercontent.com/gt-guizhou/cz-english-ime/main/releases.json`（发版时定稿）、Inno 换新 AppId
+  `F5D4CB91-4B16-4E6B-A314-40C6A78B7481` 且输出名 `czime-*`、brand.tsv 换「疯狂听抄」）。
+- 教训：批量 sed `Qingjian→CZEnglishIME` 会误伤代码标识符。处置原则：**定义与使用同在 apps/ 内的自洽改名保留**
+  （macOS `CZEnglishIMEInputController`、fcitx5 `CZEnglishIME*` C++ 类）；**跨 crate 的引用回退**
+  （`CandidateRenderer::Qingjian` 定义在 crates/，两处使用已回退）。后续批次对 apps/ 做标识符级替换前先比对 crates/。
+- 待第二批：二进制名/进程名（qingjian-server→czime-server，牵动 build.rs/embed-manifest/协议字符串/安装器引用）、
+  新图标（替换 assets/icon/ 竹简 mark，上游 logo 不在授权内）、「关于」页 UPSTREAM_URL 按钮（随账号/同步页接线）。

@@ -7,10 +7,10 @@
 #include <fcitx/inputcontextproperty.h>
 #include <fcitx/instance.h>
 namespace fcitx {
-class QingjianEngine final : public InputMethodEngineV2 {
+class CZEnglishIMEEngine final : public InputMethodEngineV2 {
 public:
-    explicit QingjianEngine(AddonManager *manager);
-    ~QingjianEngine() override;
+    explicit CZEnglishIMEEngine(AddonManager *manager);
+    ~CZEnglishIMEEngine() override;
     void keyEvent(const InputMethodEntry &, KeyEvent &) override;
     void reset(const InputMethodEntry &, InputContextEvent &) override;
     void deactivate(const InputMethodEntry &, InputContextEvent &) override;

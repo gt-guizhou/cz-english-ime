@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
     char *arguments[] = {program, disable, nullptr};
     fcitx::Instance instance(2, arguments);
     instance.initialize();
-    fcitx::QingjianEngine engine(&instance.addonManager());
+    fcitx::CZEnglishIMEEngine engine(&instance.addonManager());
     fcitx::InputMethodEntry entry("qingjian", "qingjian", "zh_CN", "qingjian");
     auto context = std::make_unique<Context>(instance.inputContextManager());
     using Flag = fcitx::CapabilityFlag;

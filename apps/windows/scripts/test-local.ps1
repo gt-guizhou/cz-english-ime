@@ -18,7 +18,7 @@
 [CmdletBinding()]
 param(
     # 已安装的目录（真实数据从这里拷）。
-    [string]$InstallDir = "$env:ProgramFiles\Qingjian",
+    [string]$InstallDir = "$env:ProgramFiles\CZEnglishIME",
 
     # 联调用的工作目录。**不要用 %TEMP%**：它在这台机器上是 8.3 短名（`C:\Users\TONYWU~1\...`），
     # PowerShell 走不通，`cd` 会报「An object at the specified path ... does not exist」。
@@ -38,8 +38,8 @@ $repo = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $PSScriptRoot
 $table = Join-Path $repo 'assets\wubi\wubi86.tsv'
 $server = Join-Path $repo 'target\debug\qingjian-server.exe'
 $dll = Join-Path $repo 'target\debug\qingjian_tsf.dll'
-$config = Join-Path $env:APPDATA 'Qingjian\config.toml'
-$logs = Join-Path $env:APPDATA 'Qingjian\logs'
+$config = Join-Path $env:APPDATA 'CZEnglishIME\config.toml'
+$logs = Join-Path $env:APPDATA 'CZEnglishIME\logs'
 
 # 文本服务的 CLSID，与 `apps/windows/tsf/src/com/mod.rs` 的 `CLSID_QINGJIAN` 同步。
 # 注册完查这里指向哪儿——比 regsvr32 的退出码可靠（见下）。
@@ -52,7 +52,7 @@ function Assert-Path($path, $what) {
 }
 
 Write-Host '== 前置检查' -ForegroundColor Cyan
-Assert-Path $InstallDir '安装目录（先装一次青简，或者用 -InstallDir 指过去）'
+Assert-Path $InstallDir '安装目录（先装一次疯狂听抄输入法，或者用 -InstallDir 指过去）'
 Assert-Path $table '五笔码表（跑 dict-convert wubi 生成，见 assets/wubi/README.md）'
 if (-not $SkipBuild) {
     Write-Host '   安装目录 ✓  码表 ✓'
@@ -75,7 +75,7 @@ if (-not $SkipBuild) {
         $holders | ForEach-Object { Write-Host "   $($_.Line.Trim())" -ForegroundColor Yellow }
         Write-Host ''
         Write-Host '   切走输入法就能放开（TSF 在切走时卸载 DLL）：Win+Space 换到别的输入法，或 Shift 切英文。' -ForegroundColor Yellow
-        Write-Host '   还不行就关掉那个窗口重开，在新窗口里别切到青简，直接跑本脚本。' -ForegroundColor Yellow
+        Write-Host '   还不行就关掉那个窗口重开，在新窗口里别切到疯狂听抄输入法，直接跑本脚本。' -ForegroundColor Yellow
         Write-Host '   （查：tasklist /m qingjian_tsf.dll）' -ForegroundColor Yellow
         exit 1
     }
@@ -170,7 +170,7 @@ Write-Host '       只用五笔           scheme = "none"    wubi = "wubi86"'
 Write-Host '       五笔 + 全拼混输     scheme = "pinyin"  wubi = "wubi86"'
 Write-Host '       只用双拼           scheme = "xiaohe"  wubi = ""'
 Write-Host ''
-Write-Host '  3. 关掉记事本再打开（已经在跑的进程手里攥着旧 DLL，注册新的对它没用），切到青简。'
+Write-Host '  3. 关掉记事本再打开（已经在跑的进程手里攥着旧 DLL，注册新的对它没用），切到疯狂听抄输入法。'
 Write-Host ''
 Write-Host '  4. 敲这几组：'
 Write-Host '       r      → 的（一级简码）'

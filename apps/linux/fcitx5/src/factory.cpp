@@ -1,9 +1,9 @@
-//! 青简 addon 工厂。
+//! 疯狂听抄输入法 addon 工厂。
 #include "qingjian.h"
 namespace fcitx {
-class QingjianFactory final : public AddonFactory {
+class CZEnglishIMEFactory final : public AddonFactory {
 public:
-    AddonInstance *create(AddonManager *manager) override { return new QingjianEngine(manager); }
+    AddonInstance *create(AddonManager *manager) override { return new CZEnglishIMEEngine(manager); }
 };
 }
-FCITX_ADDON_FACTORY_V2(qingjian, fcitx::QingjianFactory)
+FCITX_ADDON_FACTORY_V2(qingjian, fcitx::CZEnglishIMEFactory)

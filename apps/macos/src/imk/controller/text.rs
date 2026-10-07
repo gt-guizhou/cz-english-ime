@@ -2,7 +2,7 @@
 
 use super::*;
 
-impl QingjianInputController {
+impl CZEnglishIMEInputController {
     pub(super) fn handle_text(&self, text: &str, client: TextClient<'_>) -> bool {
         tracing::debug!(%text, "inputText");
         self.note_application(&client);

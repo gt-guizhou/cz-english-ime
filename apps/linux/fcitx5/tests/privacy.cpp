@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
         char *arguments[] = {program, disable, nullptr};
         fcitx::Instance instance(2, arguments);
         instance.initialize();
-        fcitx::QingjianEngine engine(&instance.addonManager());
+        fcitx::CZEnglishIMEEngine engine(&instance.addonManager());
         Context context(instance.inputContextManager());
         using Flag = fcitx::CapabilityFlag;
         using Flags = fcitx::CapabilityFlags;

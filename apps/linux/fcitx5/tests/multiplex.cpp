@@ -12,7 +12,7 @@ int main() {
     char program[] = "qingjian-real"; char disable[] = "--disable=all";
     char *arguments[] = {program, disable, nullptr};
     fcitx::Instance instance(2, arguments); instance.initialize();
-    auto engineOwner = std::make_unique<fcitx::QingjianEngine>(&instance.addonManager());
+    auto engineOwner = std::make_unique<fcitx::CZEnglishIMEEngine>(&instance.addonManager());
     auto &engine = *engineOwner;
     fcitx::InputMethodEntry entry("qingjian", "qingjian", "zh_CN", "qingjian");
     auto type = [&](Input &context, const std::string &text) {

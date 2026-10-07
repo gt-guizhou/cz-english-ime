@@ -27,7 +27,7 @@ std::string contextIdentity(const InputContext *context) {
     return out.str();
 }
 }
-QingjianEngine::QingjianEngine(AddonManager *manager)
+CZEnglishIMEEngine::CZEnglishIMEEngine(AddonManager *manager)
     : instance_(manager->instance()), shared_(std::make_shared<qingjian::SharedConnection>()),
       sessions_([this](InputContext &context) {
           const auto id = shared_->nextSession++;
@@ -66,7 +66,7 @@ QingjianEngine::QingjianEngine(AddonManager *manager)
         }
     });
 }
-QingjianEngine::~QingjianEngine() {
+CZEnglishIMEEngine::~CZEnglishIMEEngine() {
     *alive_ = false;
     poller_.reset(); polled_.unwatch();
     capabilityWatcher_.reset(); focusWatcher_.reset(); keyboardWatcher_.reset();
@@ -82,7 +82,7 @@ QingjianEngine::~QingjianEngine() {
     }
     sessions_.unregister();
 }
-void QingjianEngine::clear(InputContext *context) {
+void CZEnglishIMEEngine::clear(InputContext *context) {
     if (polled_.get() == context) stopPolling();
     const auto watched = context->watch();
     auto *session = context->propertyFor(&sessions_);
@@ -94,7 +94,7 @@ void QingjianEngine::clear(InputContext *context) {
     if (watched.get() && session->revision == revision)
         context->updateUserInterface(UserInterfaceComponent::InputPanel);
 }
-void QingjianEngine::disconnectAll() {
+void CZEnglishIMEEngine::disconnectAll() {
     if (shared_->clearing) return;
     shared_->clearing = true;
     shared_->watcher.reset();
@@ -117,7 +117,7 @@ void QingjianEngine::disconnectAll() {
         if (auto *context = watched.get(); context && shared_->contexts.contains(id)) clear(context);
     shared_->clearing = false;
 }
-void QingjianEngine::disconnect(InputContext *context) {
+void CZEnglishIMEEngine::disconnect(InputContext *context) {
     auto *session = context->propertyFor(&sessions_);
     if (session->opened) {
         shared_->retire(session->id);
@@ -129,7 +129,7 @@ void QingjianEngine::disconnect(InputContext *context) {
     session->capabilities = nullptr;
     clear(context);
 }
-bool QingjianEngine::connect(InputContext *context) {
+bool CZEnglishIMEEngine::connect(InputContext *context) {
     auto *session = context->propertyFor(&sessions_);
     const auto watched = context->watch();
     if (shared_->clearing) return false;
@@ -172,7 +172,7 @@ bool QingjianEngine::connect(InputContext *context) {
         return watched.get() && session->opened;
     } catch (const std::exception &) { disconnectAll(); return false; }
 }
-bool QingjianEngine::syncPrivacy(InputContext *context) {
+bool CZEnglishIMEEngine::syncPrivacy(InputContext *context) {
     auto *session = context->propertyFor(&sessions_);
     const auto caps = context->capabilityFlags();
     nlohmann::json facts = {{"sensitive", caps.test(CapabilityFlag::Sensitive)},
@@ -198,7 +198,7 @@ bool QingjianEngine::syncPrivacy(InputContext *context) {
     }
     return session->opened;
 }
-bool QingjianEngine::exchange(InputContext *context, const nlohmann::json &event, bool display) {
+bool CZEnglishIMEEngine::exchange(InputContext *context, const nlohmann::json &event, bool display) {
     auto *session = context->propertyFor(&sessions_);
     const auto watched = context->watch();
     const auto generation = session->generation;
@@ -241,7 +241,7 @@ bool QingjianEngine::exchange(InputContext *context, const nlohmann::json &event
         return outcome == "Consumed";
     } catch (const std::exception &) { disconnectAll(); return consumed; }
 }
-void QingjianEngine::reset(const InputMethodEntry &, InputContextEvent &event) {
+void CZEnglishIMEEngine::reset(const InputMethodEntry &, InputContextEvent &event) {
     auto *context = event.inputContext();
     const auto watched = context->watch();
     ++context->propertyFor(&sessions_)->lifecycle;
@@ -250,7 +250,7 @@ void QingjianEngine::reset(const InputMethodEntry &, InputContextEvent &event) {
     context->propertyFor(&sessions_)->clientPreedit = false;
     clear(context);
 }
-void QingjianEngine::deactivate(const InputMethodEntry &, InputContextEvent &event) {
+void CZEnglishIMEEngine::deactivate(const InputMethodEntry &, InputContextEvent &event) {
     auto *context = event.inputContext();
     auto *session = context->propertyFor(&sessions_);
     const auto watched = context->watch();
@@ -270,10 +270,10 @@ void QingjianEngine::deactivate(const InputMethodEntry &, InputContextEvent &eve
     session->clientPreedit = false;
     clear(context);
 }
-void QingjianEngine::keyEvent(const InputMethodEntry &, KeyEvent &event) {
+void CZEnglishIMEEngine::keyEvent(const InputMethodEntry &, KeyEvent &event) {
     if (event.inputContext() && process(event.inputContext(), event.rawKey(), event.isRelease())) event.filterAndAccept();
 }
-bool QingjianEngine::process(InputContext *context, const Key &key, bool release) {
+bool CZEnglishIMEEngine::process(InputContext *context, const Key &key, bool release) {
     const auto watched = context->watch();
     const auto caps = context->capabilityFlags();
     if (caps.test(CapabilityFlag::Password) || caps.test(CapabilityFlag::Disable)) {
@@ -283,7 +283,7 @@ bool QingjianEngine::process(InputContext *context, const Key &key, bool release
     if (!connect(context) || !watched.get() || !syncPrivacy(context) || !watched.get()) return false;
     return exchange(context, {{"Key", {{"event", qingjian::mapKey(key)}, {"release", release}}}});
 }
-void QingjianEngine::render(InputContext *context, const nlohmann::json &frame) {
+void CZEnglishIMEEngine::render(InputContext *context, const nlohmann::json &frame) {
     auto *session = context->propertyFor(&sessions_);
     const auto identity = session->displayIdentity;
     const auto revision = ++session->revision;
@@ -352,7 +352,7 @@ void QingjianEngine::render(InputContext *context, const nlohmann::json &frame) 
         throw std::runtime_error("display acknowledgment");
     watch(context, !preedit.empty());
 }
-void QingjianEngine::watch(InputContext *context, bool composing) {
+void CZEnglishIMEEngine::watch(InputContext *context, bool composing) {
     if (!composing) {
         if (polled_.get() == context) stopPolling();
         return;
@@ -372,11 +372,11 @@ void QingjianEngine::watch(InputContext *context, bool composing) {
     poller_->setNextInterval(POLL_INTERVAL_US);
     poller_->setOneShot();
 }
-void QingjianEngine::stopPolling() {
+void CZEnglishIMEEngine::stopPolling() {
     polled_.unwatch();
     if (poller_) poller_->setEnabled(false);
 }
-void QingjianEngine::poll() {
+void CZEnglishIMEEngine::poll() {
     auto *context = polled_.get();
     if (!context || shared_->clearing || !context->hasFocus() || !context->propertyFor(&sessions_)->opened) { stopPolling(); return; }
     auto *session = context->propertyFor(&sessions_);

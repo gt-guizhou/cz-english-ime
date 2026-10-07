@@ -7,17 +7,17 @@
 	<key>CFBundleExecutable</key>
 	<string>qingjian-macos</string>
 	<key>CFBundleIdentifier</key>
-	<string>app.qingjian.inputmethod</string>
+	<string>cn.raptrans.ime</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Qingjian</string>
+	<string>CZEnglishIME</string>
 	<key>CFBundleDisplayName</key>
-	<string>青简</string>
+	<string>疯狂听抄输入法</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleIconFile</key>
-	<string>Qingjian</string>
+	<string>CZEnglishIME</string>
 	<key>CFBundleShortVersionString</key>
 	<string>0.1.0</string>
 	<key>CFBundleVersion</key>
@@ -31,19 +31,19 @@
 
 	<!-- InputMethodKit：连接名按 10.7 起的约定必须是 <bundle id>_Connection -->
 	<key>InputMethodConnectionName</key>
-	<string>app.qingjian.inputmethod_Connection</string>
+	<string>cn.raptrans.ime_Connection</string>
 	<!-- 与 imk/controller/mod.rs 里 define_class! 的 #[name] 一致 -->
 	<key>InputMethodServerControllerClass</key>
-	<string>QingjianInputController</string>
+	<string>CZEnglishIMEInputController</string>
 	<key>InputMethodType</key>
 	<string>Keyboard</string>
 
 	<!-- Text Input Sources：系统「输入法」列表里的身份 -->
 	<key>TISInputSourceID</key>
-	<string>app.qingjian.inputmethod</string>
+	<string>cn.raptrans.ime</string>
 	<key>TISIntendedLanguage</key>
 	<string>zh-Hans</string>
-	<!-- 允许系统设置里打开「用 Caps Lock 在 ABC 与青简之间切换」；缺省不开，青简自己的 Caps Lock 英文模式不变（#211） -->
+	<!-- 允许系统设置里打开「用 Caps Lock 在 ABC 与疯狂听抄输入法之间切换」；缺省不开，疯狂听抄输入法自己的 Caps Lock 英文模式不变（#211） -->
 	<key>TICapsLockLanguageSwitchCapable</key>
 	<true/>
 	<key>tsInputMethodIconFileKey</key>
@@ -57,16 +57,16 @@
 		<string>Latn</string>
 	</array>
 
-	<!-- 输入模式：系统登记、启用的是模式 app.qingjian.inputmethod.Hans，顶层 ID 是它的父项；
+	<!-- 输入模式：系统登记、启用的是模式 cn.raptrans.ime.Hans，顶层 ID 是它的父项；
 	显示名在 InfoPlist.strings 按模式 ID 给。约定见 docs/design/architecture.md「Info.plist 约定」 -->
 	<key>ComponentInputModeDict</key>
 	<dict>
 		<key>tsInputModeListKey</key>
 		<dict>
-			<key>app.qingjian.inputmethod.Hans</key>
+			<key>cn.raptrans.ime.Hans</key>
 			<dict>
 				<key>TISInputSourceID</key>
-				<string>app.qingjian.inputmethod.Hans</string>
+				<string>cn.raptrans.ime.Hans</string>
 				<key>TISIntendedLanguage</key>
 				<string>zh-Hans</string>
 				<key>tsInputModeCharacterRepertoireKey</key>
@@ -92,7 +92,7 @@
 		</dict>
 		<key>tsVisibleInputModeOrderedArrayKey</key>
 		<array>
-			<string>app.qingjian.inputmethod.Hans</string>
+			<string>cn.raptrans.ime.Hans</string>
 		</array>
 	</dict>
 </dict>

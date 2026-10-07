@@ -82,7 +82,7 @@ impl InputMenu {
         error.setEnabled(false);
         error.setHidden(true);
         menu.addItem(&error);
-        let about = action_item(mtm, &format!("青简 {version}"), None, &target);
+        let about = action_item(mtm, &format!("疯狂听抄输入法 {version}"), None, &target);
         about.setEnabled(false);
         menu.addItem(&about);
 

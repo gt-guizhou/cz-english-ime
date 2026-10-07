@@ -1,4 +1,4 @@
-//! 数据文件位置：只读数据在 `.app/Contents/Resources/`，用户数据在 `~/Library/Application Support/Qingjian/`。
+//! 数据文件位置：只读数据在 `.app/Contents/Resources/`，用户数据在 `~/Library/Application Support/CZEnglishIME/`。
 
 use std::path::PathBuf;
 
@@ -41,19 +41,19 @@ pub fn code_table_path() -> Option<PathBuf> {
     bundled.is_file().then_some(bundled)
 }
 
-/// 配置文件：`~/Library/Application Support/Qingjian/config.toml`。
+/// 配置文件：`~/Library/Application Support/CZEnglishIME/config.toml`。
 pub fn config_file() -> Option<PathBuf> {
     user_data_dir().map(|dir| dir.join("config.toml"))
 }
 
 /// 用户数据目录，不存在则创建。
 pub fn user_data_dir() -> Option<PathBuf> {
-    let dir = PathBuf::from(std::env::var_os("HOME")?).join("Library/Application Support/Qingjian");
+    let dir = PathBuf::from(std::env::var_os("HOME")?).join("Library/Application Support/CZEnglishIME");
     std::fs::create_dir_all(&dir).ok()?;
     Some(dir)
 }
 
-/// 附加词库目录：`~/Library/Application Support/Qingjian/dicts/`，不存在则创建。
+/// 附加词库目录：`~/Library/Application Support/CZEnglishIME/dicts/`，不存在则创建。
 pub fn dicts_dir() -> Option<PathBuf> {
     let dir = user_data_dir()?.join("dicts");
     std::fs::create_dir_all(&dir).ok()?;

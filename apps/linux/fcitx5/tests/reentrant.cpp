@@ -9,7 +9,7 @@
 
 namespace {
 bool keyboardVisible = false;
-void type(fcitx::QingjianEngine &engine, Input &context, const std::string &text) {
+void type(fcitx::CZEnglishIMEEngine &engine, Input &context, const std::string &text) {
     for (auto c : text) assert(engine.process(&context, fcitx::Key(static_cast<fcitx::KeySym>(c))));
 }
 qingjian::Session *session(Input &context) {
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     char program[] = "qingjian-reentrant", disable[] = "--disable=all";
     char *arguments[] = {program, disable, nullptr};
     fcitx::Instance instance(2, arguments); instance.initialize();
-    fcitx::QingjianEngine engine(&instance.addonManager());
+    fcitx::CZEnglishIMEEngine engine(&instance.addonManager());
     fcitx::InputMethodEntry entry("qingjian", "qingjian", "zh_CN", "qingjian");
     auto a = std::make_unique<Input>(instance.inputContextManager());
     auto b = std::make_unique<Input>(instance.inputContextManager());

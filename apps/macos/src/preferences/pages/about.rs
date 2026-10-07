@@ -22,6 +22,10 @@ pub const LICENSE_NOTE: &str = "自由软件，GPL-3.0-or-later 许可证：可�
 /// 随包数据的来源与许可证。改数据来源时同步改这里和 `apps/macos/scripts/bundle.sh` 里 `pack` 的署名。
 pub const ATTRIBUTIONS: &[(&str, &str)] = &[
     (
+        "上游项目",
+        "本输入法基于 青简 Qingjian（qingjian-team，GPL-3.0）二次开发，感谢其开源工作。",
+    ),
+    (
         "词库",
         "通用规范汉字表；现代汉语常用词表（liuxilu 校对版）；THUOCL（清华大学自然语言处理实验室，MIT）；读音取自 Unihan（Unicode License v3）。",
     ),
@@ -29,7 +33,7 @@ pub const ATTRIBUTIONS: &[(&str, &str)] = &[
         "语言模型",
         "中文维基百科（CC BY-SA 4.0）与 LCCC（清华大学 CoAI，MIT）语料统计。",
     ),
-    ("释义表", "由大语言模型（DeepSeek）生成，青简自建。"),
+    ("释义表", "由大语言模型（DeepSeek）生成，疯狂听抄输入法自建。"),
     ("emoji", "Unicode CLDR annotations（Unicode License v3）。"),
     (
         "英文词表",
@@ -41,18 +45,22 @@ pub const ATTRIBUTIONS: &[(&str, &str)] = &[
     ),
     (
         "五笔码表",
-        "86 五笔极点码表（sxjudya/rime-wubi86-jidian，Apache-2.0）；编码来自上游，词频由青简词库按词面回填。",
+        "86 五笔极点码表（sxjudya/rime-wubi86-jidian，Apache-2.0）；编码来自上游，词频由疯狂听抄输入法词库按词面回填。",
     ),
 ];
 
 /// 官网。
-pub const WEBSITE_URL: &str = "https://qingjian.app";
+pub const WEBSITE_URL: &str = "https://www.raptrans.cn";
 
 /// 源码与问题反馈。
-pub const REPOSITORY_URL: &str = "https://github.com/qingjian-team";
+pub const REPOSITORY_URL: &str = "https://github.com/gt-guizhou/cz-english-ime";
+
+/// 上游项目（本输入法基于其二次开发）。UI 按钮随「账号/同步」设置页批次接线。
+#[allow(dead_code)]
+pub const UPSTREAM_URL: &str = "https://github.com/qingjian-team/qingjian";
 
 /// 隐私说明。
-pub const PRIVACY_NOTE: &str = "青简不上传任何数据。开着「自动检查更新」时每天向官网读一次版本列表，请求不带任何标识，上面可以关。开着云联想或翻译时，光标附近的文字与拼音会发给你在「云服务」页填的 AI 服务商（缺省 DeepSeek）的服务器，不经过作者。「高级」页的输入日志只写在这台电脑的数据目录里，可以关掉或清空。";
+pub const PRIVACY_NOTE: &str = "疯狂听抄输入法不上传任何数据。开着「自动检查更新」时每天向官网读一次版本列表，请求不带任何标识，上面可以关。开着云联想或翻译时，光标附近的文字与拼音会发给你在「云服务」页填的 AI 服务商（缺省 DeepSeek）的服务器，不经过作者。「高级」页的输入日志只写在这台电脑的数据目录里，可以关掉或清空。";
 
 /// 反馈方式。
 pub const FEEDBACK_NOTE: &str = "遇到问题点「打包日志到桌面」，把生成的 zip 发给作者即可（含日志与配置文件，不含密钥），再附上「复制诊断信息」的内容。缺省日志不含你敲的内容；排查排序问题时作者可能请你在「高级」页临时打开详细日志。";
@@ -125,7 +133,7 @@ pub fn build(
     version: &str,
     build: &str,
 ) -> AboutPage {
-    let title = NSTextField::labelWithString(&NSString::from_str(&format!("青简 {version}")), mtm);
+    let title = NSTextField::labelWithString(&NSString::from_str(&format!("疯狂听抄输入法 {version}")), mtm);
     title.setFont(Some(&NSFont::boldSystemFontOfSize(15.0)));
     layout.place(&title, PAGE_PADDING, layout.inner_width(), ROW_HEIGHT);
     layout.next_row(ROW_HEIGHT);

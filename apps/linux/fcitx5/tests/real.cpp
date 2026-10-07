@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
         char *arguments[] = {program, disable, nullptr};
         fcitx::Instance instance(2, arguments);
         instance.initialize();
-        fcitx::QingjianEngine engine(&instance.addonManager());
+        fcitx::CZEnglishIMEEngine engine(&instance.addonManager());
         Context context(instance.inputContextManager());
         context.focusIn(); // 全空 capability 应正常输入。
         for (char c : std::string("nihao")) assert(engine.process(&context, fcitx::Key(static_cast<fcitx::KeySym>(c))));

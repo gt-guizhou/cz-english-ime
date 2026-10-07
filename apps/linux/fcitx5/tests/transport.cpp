@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
     char program[] = "qingjian-transport"; char disable[] = "--disable=all"; char *arguments[] = {program, disable, nullptr};
     {
         fcitx::Instance instance(2, arguments); instance.initialize();
-        fcitx::QingjianEngine engine(&instance.addonManager());
+        fcitx::CZEnglishIMEEngine engine(&instance.addonManager());
         Input context(instance.inputContextManager());
         auto begin = std::chrono::steady_clock::now();
         assert(!engine.process(&context, fcitx::Key(FcitxKey_n)));
