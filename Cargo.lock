@@ -2835,6 +2835,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "qingjian-sync"
+version = "0.1.1"
+dependencies = [
+ "jiff",
+ "qingjian-core",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.20",
+ "tracing",
+]
+
+[[package]]
 name = "qingjian-translate"
 version = "0.1.1"
 dependencies = [
@@ -3133,6 +3146,7 @@ checksum = "16a1cfa75cc186dd73d5818e510e042e40927bccc9c236b061cea97e1eb08029"
 dependencies = [
  "base64 0.23.1",
  "bytes",
+ "futures-channel",
  "futures-core",
  "futures-util",
  "http",
