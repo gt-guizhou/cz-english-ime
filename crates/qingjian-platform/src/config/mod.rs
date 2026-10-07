@@ -81,6 +81,9 @@ pub struct Config {
     /// 云联想。
     pub predict: PredictConfig,
 
+    /// 生词同步（疯狂听抄账号，默认关闭）。
+    pub sync: qingjian_sync::SyncConfig,
+
     /// 悬浮状态条（桌面上常驻、可拖动的中 / 英浮窗）。
     pub status_bar: StatusBarConfig,
 
@@ -334,6 +337,12 @@ lookahead = 32
 slots = 2
 # 组句中除了词候选还要不要整句补全（preedit 右侧，Tab 接受）
 sentence = true
+
+[sync]
+# 生词同步：把生词本里值得复习的英文词推给疯狂听抄账号下的「疯狂听抄输入法生词」词本。默认关闭。
+# 登录令牌由设置程序的「账号」页写入这里（或用环境变量 CZIME_SYNC_TOKEN）；发送的只有生词表，不含输入日志
+enabled = false
+base_url = "https://www.raptrans.cn"
 
 [status_bar]
 # 桌面上常驻、可拖动的悬浮状态条（Windows）：「中 / 英」格点一下切换模式（开着双拼时还显示方案名）、「，。」格切全角 / 半角标点、齿轮打开设置。
