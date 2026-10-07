@@ -112,4 +112,14 @@ pub(crate) enum Message {
     UpdateChecked(Option<Result<qingjian_update::UpdateState, String>>),
     OpenDownload,
     OpenRepository,
+
+    // 账号/同步页
+    SyncEnabled(bool),
+    SyncBaseUrl(String),
+    SyncAccount(String),
+    SyncPassword(String),
+    SyncLogin,
+    SyncLoginDone(Result<String, String>),
+    SyncNow,
+    SyncDone(Result<String, String>),
 }

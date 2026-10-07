@@ -35,7 +35,10 @@ const ATTRIBUTIONS: &[(&str, &str)] = &[
         "语言模型",
         "中文维基百科（CC BY-SA 4.0）与 LCCC（清华大学 CoAI，MIT）语料统计。",
     ),
-    ("释义表", "由大语言模型（DeepSeek）生成，疯狂听抄输入法自建。"),
+    (
+        "释义表",
+        "由大语言模型（DeepSeek）生成，疯狂听抄输入法自建。",
+    ),
     ("emoji", "Unicode CLDR annotations（Unicode License v3）。"),
     (
         "英文词表",

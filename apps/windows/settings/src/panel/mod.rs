@@ -19,7 +19,8 @@ use self::cloud_status::CloudStatus;
 pub(crate) use self::message::Message;
 use self::notice::Notice;
 use self::pages::{
-    about, advanced, aux_code, candidates, cloud, dictionaries, fuzzy, general, shortcut, usage,
+    about, account, advanced, aux_code, candidates, cloud, dictionaries, fuzzy, general, shortcut,
+    usage,
 };
 use self::recorder::Recorder;
 
@@ -39,6 +40,11 @@ pub(crate) struct Settings {
 
     /// 云服务「测试连接」的状态。
     cloud_status: CloudStatus,
+
+    /// 「账号」页：登录框与同步状态的瞬态（token 落 `[sync]`，账号/密码不落盘）。
+    sync_account: String,
+    sync_password: String,
+    sync_status: String,
 
     /// 「辅码」页的触发键录制状态。
     recorder: Recorder,
@@ -119,6 +125,7 @@ impl Settings {
             "candidates" => candidates::view(self, context),
             "shortcut" => shortcut::view(self, context),
             "cloud" => cloud::view(self, context),
+            "account" => account::view(self, context),
             "fuzzy" => fuzzy::view(self, context),
             "dictionaries" => dictionaries::view(self, context),
             "aux_code" => aux_code::view(self, context),

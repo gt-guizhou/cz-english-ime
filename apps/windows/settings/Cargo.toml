@@ -31,6 +31,9 @@ qingjian-core.workspace = true
 qingjian-dictionary.workspace = true
 qingjian-translate.workspace = true
 qingjian-update.workspace = true
+qingjian-sync.workspace = true
+reqwest = { workspace = true, features = ["blocking", "json", "native-tls"] }
+serde_json.workspace = true
 jiff.workspace = true
 rfd = "0.17"
 

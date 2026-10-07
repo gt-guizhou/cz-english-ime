@@ -9,7 +9,7 @@ use windows_reactor::*;
 use super::cloud_status::CloudStatus;
 use super::controls::{export_logs, log_dir, open_in_editor, open_with_explorer};
 use super::notice::Notice;
-use super::pages::{about, aux_code, cloud, dictionaries, general, shortcut};
+use super::pages::{about, account, aux_code, cloud, dictionaries, general, shortcut};
 use super::recorder::Recorder;
 use super::{Message, Settings};
 
@@ -26,6 +26,9 @@ impl Component for Settings {
             path,
             page: "general".to_string(),
             cloud_status: CloudStatus::Idle,
+            sync_account: String::new(),
+            sync_password: String::new(),
+            sync_status: String::new(),
             recorder: Recorder::Idle,
             record_box: ElementRef::new(),
             notice: Notice::default(),
@@ -156,6 +159,48 @@ impl Component for Settings {
                 self.cloud_status = match result {
                     Ok(message) => CloudStatus::Ok(message),
                     Err(message) => CloudStatus::Failed(message),
+                };
+            }
+
+            // 账号/同步页
+            Message::SyncEnabled(on) => self.save("sync", "enabled", on),
+            Message::SyncBaseUrl(value) => self.save("sync", "base_url", value),
+            Message::SyncAccount(value) => self.sync_account = value,
+            Message::SyncPassword(value) => self.sync_password = value,
+            Message::SyncLogin => {
+                let config = self.config.sync.clone();
+                let account = self.sync_account.trim().to_owned();
+                let password = self.sync_password.clone();
+                if account.is_empty() || password.is_empty() {
+                    self.sync_status = "账号与密码都要填".to_owned();
+                    return;
+                }
+                self.sync_status = "登录中…".to_owned();
+                context.spawn_background(move |_cancel| {
+                    Message::SyncLoginDone(account::run_login(&config, &account, &password))
+                });
+            }
+            Message::SyncLoginDone(result) => match result {
+                Ok(token) => {
+                    // 密码用完即清，不留在内存状态里；token 落 [sync] 并重读配置
+                    self.sync_password.clear();
+                    self.sync_status = "登录成功".to_owned();
+                    self.save("sync", "token", token);
+                }
+                Err(message) => self.sync_status = format!("登录失败：{message}"),
+            },
+            Message::SyncNow => {
+                let config = self.config.sync.clone();
+                let dir = self.data_dir().to_path_buf();
+                self.sync_status = "同步中…".to_owned();
+                context.spawn_background(move |_cancel| {
+                    Message::SyncDone(account::run_sync(&config, &dir))
+                });
+            }
+            Message::SyncDone(result) => {
+                self.sync_status = match result {
+                    Ok(message) => message,
+                    Err(message) => format!("同步失败：{message}"),
                 };
             }
 
@@ -337,6 +382,7 @@ impl Component for Settings {
             item("candidates", "候选窗口", Symbol::View),
             item("shortcut", "快捷键", Symbol::Keyboard),
             item("cloud", "云服务", Symbol::World),
+            item("account", "账号", Symbol::People),
             item("fuzzy", "模糊音", Symbol::Audio),
             item("dictionaries", "词库", Symbol::Library),
             item("aux_code", "辅码", Symbol::Character),
