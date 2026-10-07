@@ -1,0 +1,22 @@
+疯狂听抄输入法（cz-english-ime）修改声明
+=========================================
+
+本仓库基于 Qingjian（青简）二次开发而来：
+
+  上游仓库：https://github.com/qingjian-team/qingjian
+  分叉基线：main @ c08ae57（2026-10 提取），其后为本仓库独立修改
+
+自 2026-10 起，本仓库在其基础上做了如下修改（随开发持续更新）：
+
+  1. 品牌与产品名：青简 Qingjian → 疯狂听抄输入法（CZ-English IME），
+     替换 bundle id、安装器与设置页文案（进行中）；
+  2. 更新检查端点指向自有域名（qingjian-update 组件）；
+  3. 新增账号登录与生词同步：登录「疯狂听抄」账号后，可将本地生词表
+     同步至个人词本（qingjian-sync，进行中）。
+
+代码许可保持 GPL-3.0-or-later 不变（见 LICENSE）。
+「青简 / Qingjian」名称与 logo 归 qingjian-team 所有，不包含在代码授权中；
+本仓库不使用上述名称与标志。
+
+随包数据各自保留来源、署名与许可原文（assets/ 各目录 README，
+汇总见 docs/design/landscape.md「数据来源清单」）。
