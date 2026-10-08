@@ -66,3 +66,20 @@ git push                              # rebase 后如被拒：git push --force-w
 - **Mac 批次待办**（本机无 objc2/Xcode，集中到 Mac 上做）：二进制名 `qingjian-macos`、菜单栏图标
   `assets/icon/menu.pdf`/`menu.svg`（仍是上游竹简模板，**发 macOS 包前必须换**）、bundle.sh/uninstall.sh 随动检查。
 - msvc 真编译（安装包产物）待装 VS Build Tools 后验证；gnu 仅作语法/链接验证，不用于发版。
+
+## 执行注记（2026-10-08 第一份 Windows 安装包）
+
+- 产物：`target/installer/czime-<版本>-windows-x86_64-setup.exe`（首次 0.1.5-dev-35ad97e+，139MB，msvc release）。
+- 构建机一次性环境（本机已配好，换机重做）：
+  1. VS Build Tools 2022（VCTools 工作负载）——msvc 工具链的 link.exe 由 rustc 自动发现；
+  2. `rustup target add i686-pc-windows-msvc`（32 位 DLL 用）；
+  3. Inno Setup 6（winget JRSoftware.InnoSetup，装在 `%LOCALAPPDATA%\Programs\Inno Setup 6`）；
+  4. `Languages\ChineseSimplified.isl` 不随 Inno 默认安装，从 jrsoftware 官方非官方翻译获取
+     （本机放的是 localsend 仓库 vendored 的 6.4.0+ 版同源文件）；
+  5. `QINGJIAN_ISCC` 环境变量指到 ISCC.exe（build.ps1 找不到 PATH 里的就报错）；
+  6. 产品数据：`data/` 不入库，从上游 data Release（如 data-v3 的 qingjian-data.tar.gz）解出
+     `data/generated/*` 与 `data/models/*`（GPL 数据，同协议合法；lm.qj 依赖语料统计无法本地再生）。
+- 流程：`cargo build --release --locked`（三产物）→ `--target i686-pc-windows-msvc -p qingjian-windows-tsf`
+  → `build.ps1 -SkipBuild`（或直接 build.ps1 一条龙，>10 分钟注意超时）。
+- 已知限制（未签名包）：SmartScreen 会拦一次（点「仍要运行」）；uiAccess=0——微软商店/任务栏搜索
+  等高权限宿主里候选窗会被盖住。签名证书（Certum）到位后用 `-Sign` 重打对外包。
